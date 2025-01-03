@@ -44,14 +44,11 @@ const Country = () => {
       })
     ).then((borders) => {
       // console.log(borders);
-      setTimeout(() =>
-        setCountryData((previousState) => ({ ...previousState, borders }))
-      );
+      setCountryData((previousState) => ({ ...previousState, borders }));
     });
   }
 
   useEffect(() => {
-    // other code
     if (state) {
       UpdateCountryDetails(state);
       return;
@@ -66,7 +63,7 @@ const Country = () => {
         setNotFound(true);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [countryName]);
 
   if (NotFound) {
     return <div>Incorrect Country</div>;
@@ -94,12 +91,7 @@ const Country = () => {
                     <span className="native-name"></span>
                   </p>
                   <p>
-                    <b>
-                      Population:{" "}
-                      {countryData.population
-                        ? countryData.population.toLocaleString("en-IN")
-                        : countryData.population}
-                    </b>
+                    <b>Population: {countryData.population}</b>
                     <span className="population"></span>
                   </p>
                   <p>
