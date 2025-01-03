@@ -26,7 +26,7 @@ const Country = () => {
           data.borders = [];
         }
       });
-  }, [countryName]);
+  }, []);
 
   return (
     <>
