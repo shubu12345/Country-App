@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CountryCards from "./CountryCards";
+import CountryDetailsShimmer from "./CountryDetailsShimmer";
 const AllCountriesContainer = ({ query }) => {
   const [CountryData, setCountryData] = useState([]);
 
@@ -14,7 +15,7 @@ const AllCountriesContainer = ({ query }) => {
   return (
     <>
       {!CountryData.length ? (
-        "Data is loading..."
+        <CountryDetailsShimmer />
       ) : (
         <div className="countries-container">
           {CountryData.filter((country) =>

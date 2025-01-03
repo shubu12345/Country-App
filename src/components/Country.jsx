@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import "./Country.css";
+import CountryDetailsShimmer from "./CountryDetailsShimmer";
+import { useParams } from "react-router";
+
 const Country = () => {
-  const countryName = new URLSearchParams(window.location.search).get("name");
-  // console.log(countryName);
-  const [countryData, setCountryData] = useState([]);
+  const params = useParams();
+  const countryName = params.country;
+
+  const [countryData, setCountryData] = useState(null);
+  const [NotFound, setNotFound] = useState(false);
+
   useEffect(() => {
     fetch(`https:restcountries.com/v3.1/name/${countryName}?fullText=true`)
       .then((res) => res.json())
@@ -25,56 +31,82 @@ const Country = () => {
         if (!data.borders) {
           data.borders = [];
         }
+      })
+      .catch((error) => {
+        setNotFound(true);
       });
-  }, []);
+  }, [countryName]);
 
-  return (
+  if (NotFound) {
+    return <div>Incorrect Country</div>;
+  }
+
+  return countryData === null ? (
+    <CountryDetailsShimmer />
+  ) : (
     <>
       <main>
         <div className="country-details-container">
           <span className="back-button">
             <i className="fa-solid fa-arrow-left"></i>&nbsp; Back
           </span>
-          <div className="country-details">
-            <img src={countryData.svg} alt={countryData.name} />
-            <div className="details-text-container">
-              <h1>{countryData.name}</h1>
-              <div className="details-text">
-                <p>
-                  <b>Native Name: </b>
-                  <span className="native-name">{countryData.native}</span>
-                </p>
-                <p>
-                  <b>Population: </b>
-                  <span className="population">{countryData.population}</span>
-                </p>
-                <p>
-                  <b>Region: </b>
-                  <span className="region">{countryData.region}</span>
-                </p>
-                <p>
-                  <b>Sub Region: </b>
-                  <span className="sub-region">{countryData.subregion}</span>
-                </p>
-                <p>
-                  <b>Capital: </b>
-                  <span className="capital">{countryData.capital}</span>
-                </p>
-                <p>
-                  <b>Top Level Domain: </b>
-                  <span className="top-level-domain"></span>
-                </p>
-                <p>
-                  <b>Currencies: </b>
-                  <span className="currencies">{countryData.currencies}</span>
-                </p>
-                <p>
-                  <b>Languages: </b>
-                  <span className="languages">{countryData.languages}</span>
-                </p>
+          {countryData === null ? (
+            <CountryDetailsShimmer />
+          ) : (
+            <div className="country-details">
+              <img src={countryData.svg} alt={`${countryData.name} flag`} />
+              <div className="details-text-container">
+                <h1>{countryData.name}</h1>
+                <div className="details-text">
+                  <p>
+                    <b>Native Name: {countryData.nativeName}</b>
+                    <span className="native-name"></span>
+                  </p>
+                  <p>
+                    <b>
+                      Population:{" "}
+                      {countryData.population.toLocaleString("en-IN")}
+                    </b>
+                    <span className="population"></span>
+                  </p>
+                  <p>
+                    <b>Region: {countryData.region}</b>
+                    <span className="region"></span>
+                  </p>
+                  <p>
+                    <b>Sub Region: {countryData.subregion}</b>
+                    <span className="sub-region"></span>
+                  </p>
+                  <p>
+                    <b>Capital: {countryData.capital?.join(", ")}</b>
+                    <span className="capital"></span>
+                  </p>
+                  <p>
+                    <b>Top Level Domain: {countryData.tld}</b>
+                    <span className="top-level-domain"></span>
+                  </p>
+                  <p>
+                    <b>Currencies: {countryData.currencies}</b>
+                    <span className="currencies"></span>
+                  </p>
+                  <p>
+                    <b>Languages: {countryData.languages}</b>
+                    <span className="languages"></span>
+                  </p>
+                </div>
+                {/* {countryData.borders.length !== 0 && (
+                <div className="border-countries">
+                  <b>Border Countries: </b>&nbsp;
+                  {countryData.borders.map((border) => (
+                    <Link key={border} to={`/${border}`}>
+                      {border}
+                    </Link>
+                  ))}
+                </div>
+              )} */}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </>
