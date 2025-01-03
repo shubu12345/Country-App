@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Country.css";
 import CountryDetailsShimmer from "./CountryDetailsShimmer";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 const Country = () => {
   const params = useParams();
@@ -26,7 +26,7 @@ const Country = () => {
           currencies: Object.values(data.currencies)
             .map((currencies) => currencies.name)
             .join(", "),
-          border: [],
+          borders: ["india"],
         });
         if (!data.borders) {
           data.borders = [];
@@ -94,16 +94,16 @@ const Country = () => {
                     <span className="languages"></span>
                   </p>
                 </div>
-                {/* {countryData.borders.length !== 0 && (
-                <div className="border-countries">
-                  <b>Border Countries: </b>&nbsp;
-                  {countryData.borders.map((border) => (
-                    <Link key={border} to={`/${border}`}>
-                      {border}
-                    </Link>
-                  ))}
-                </div>
-              )} */}
+                {countryData.borders.length !== 0 && (
+                  <div className="border-countries">
+                    <b>Border Countries: </b>&nbsp;
+                    {countryData.borders.map((border) => (
+                      <Link key={border} to={`/${border}`}>
+                        {border}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
