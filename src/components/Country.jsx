@@ -29,22 +29,21 @@ const Country = () => {
           borders: [],
           // fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
         });
-        data.borders.map((borders) => {
-          return fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
-            .then((res) => res.json())
-            .then(([data]) => {
-              console.log("hi");
 
-              setCountryData((previousState) => ({
-                ...previousState,
-                borders: [...previousState.borders, data.name.common],
-              }));
-            });
-        });
         if (!data.borders) {
           data.borders = [];
-          return;
         }
+
+        Promise.all(
+          data.borders.map((borders) => {
+            return fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
+              .then((res) => res.json())
+              .then(([data]) => data.name.common);
+          })
+        ).then((borders) => {
+          // console.log(borders);
+          setCountryData((previousState) => ({ ...previousState, borders }));
+        });
       })
       .catch((error) => {
         setNotFound(true);
