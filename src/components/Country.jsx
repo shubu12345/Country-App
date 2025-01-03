@@ -21,15 +21,29 @@ const Country = () => {
           subregion: data.subregion,
           capital: data.capital,
           native: Object.values(data.name.nativeName)[0].common,
-          svg: data.flags.svg,
+          img: data.flags.svg,
           languages: Object.values(data.languages).join(", "),
           currencies: Object.values(data.currencies)
             .map((currencies) => currencies.name)
             .join(", "),
-          borders: ["india"],
+          borders: [],
+          // fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
+        });
+        data.borders.map((borders) => {
+          return fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
+            .then((res) => res.json())
+            .then(([data]) => {
+              console.log("hi");
+
+              setCountryData((previousState) => ({
+                ...previousState,
+                borders: [...previousState.borders, data.name.common],
+              }));
+            });
         });
         if (!data.borders) {
           data.borders = [];
+          return;
         }
       })
       .catch((error) => {
@@ -54,7 +68,7 @@ const Country = () => {
             <CountryDetailsShimmer />
           ) : (
             <div className="country-details">
-              <img src={countryData.svg} alt={`${countryData.name} flag`} />
+              <img src={countryData.img} alt={`${countryData.name} flag`} />
               <div className="details-text-container">
                 <h1>{countryData.name}</h1>
                 <div className="details-text">
@@ -63,10 +77,7 @@ const Country = () => {
                     <span className="native-name"></span>
                   </p>
                   <p>
-                    <b>
-                      Population:{" "}
-                      {countryData.population.toLocaleString("en-IN")}
-                    </b>
+                    <b>Population: {countryData.population}</b>
                     <span className="population"></span>
                   </p>
                   <p>
