@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 
-const CountryCards = ({ svg, name, population, region, capital }) => {
+const CountryCards = ({ svg, name, population, region, capital, data }) => {
   return (
-    <Link className="country-card" to={`/${name}`}>
+    <Link className="country-card" to={`/${name}`} state={data}>
       <img src={svg} alt={name + "Flag"} />
       <div className="card-text">
         <h3 className="card-title">{name}</h3>

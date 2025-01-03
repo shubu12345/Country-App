@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Country.css";
 import CountryDetailsShimmer from "./CountryDetailsShimmer";
-import { Link, useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 
 const Country = () => {
   const params = useParams();
@@ -10,7 +10,9 @@ const Country = () => {
   const [countryData, setCountryData] = useState(null);
   const [NotFound, setNotFound] = useState(false);
 
-  useEffect(() => {
+  const { state } = useLocation();
+
+  function UpdateCountryDetails(data) {
     fetch(`https:restcountries.com/v3.1/name/${countryName}?fullText=true`)
       .then((res) => res.json())
       .then(([data]) => {
@@ -29,21 +31,35 @@ const Country = () => {
           borders: [],
           // fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
         });
+      });
+    if (!data.borders) {
+      data.borders = [];
+    }
 
-        if (!data.borders) {
-          data.borders = [];
-        }
+    Promise.all(
+      data.borders.map((borders) => {
+        return fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
+          .then((res) => res.json())
+          .then(([data]) => data.name.common);
+      })
+    ).then((borders) => {
+      // console.log(borders);
+      setTimeout(() =>
+        setCountryData((previousState) => ({ ...previousState, borders }))
+      );
+    });
+  }
 
-        Promise.all(
-          data.borders.map((borders) => {
-            return fetch(`https://restcountries.com/v3.1/alpha/${borders}`)
-              .then((res) => res.json())
-              .then(([data]) => data.name.common);
-          })
-        ).then((borders) => {
-          // console.log(borders);
-          setCountryData((previousState) => ({ ...previousState, borders }));
-        });
+  useEffect(() => {
+    if (state) {
+      UpdateCountryDetails(state);
+      return;
+    }
+
+    fetch(`https:restcountries.com/v3.1/name/${countryName}?fullText=true`)
+      .then((res) => res.json())
+      .then(([data]) => {
+        UpdateCountryDetails(data);
       })
       .catch((error) => {
         setNotFound(true);
@@ -72,11 +88,16 @@ const Country = () => {
                 <h1>{countryData.name}</h1>
                 <div className="details-text">
                   <p>
-                    <b>Native Name: {countryData.nativeName}</b>
+                    <b>Native Name: {countryData.native}</b>
                     <span className="native-name"></span>
                   </p>
                   <p>
-                    <b>Population: {countryData.population}</b>
+                    <b>
+                      Population:{" "}
+                      {countryData.population
+                        ? countryData.population.toLocaleString("en-IN")
+                        : countryData.population}
+                    </b>
                     <span className="population"></span>
                   </p>
                   <p>
