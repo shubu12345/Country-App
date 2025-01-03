@@ -51,6 +51,7 @@ const Country = () => {
   }
 
   useEffect(() => {
+    // other code
     if (state) {
       UpdateCountryDetails(state);
       return;
@@ -64,7 +65,8 @@ const Country = () => {
       .catch((error) => {
         setNotFound(true);
       });
-  }, [countryName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (NotFound) {
     return <div>Incorrect Country</div>;
