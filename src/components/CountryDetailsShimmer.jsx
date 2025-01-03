@@ -6,12 +6,12 @@ export default function CountryDetailsShimmer() {
     <div className="country-details shimmer">
       <div className="flag"></div>
       <div className="details-text-container">
-        <h1 className="title"></h1>
-        <div className="">
-          <p></p>
-          <p></p>
-          <p></p>
-          <p></p>
+        <h1 className="title"> </h1>
+        <div className="dd">
+          <p className="dd"></p>
+          <p className="dd"></p>
+          <p className="dd"></p>
+          <p className="dd"></p>
         </div>
       </div>
     </div>
